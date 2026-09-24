@@ -1,0 +1,30 @@
+{
+  "_version": "1.40.0",
+  "sap.app": {
+    "id": "ip.po",
+    "type": "application",
+    "title": "{{appTitle}}",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "1.0.0" },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/C_PURCHASEORDER_FS_SRV/",
+        "type": "OData",
+        "settings": { "odataVersion": "2.0" }
+      }
+    }
+  },
+  "sap.ui": { "technology": "UI5", "deviceTypes": { "desktop": true, "tablet": true, "phone": true } },
+  "sap.ui5": {
+    "dependencies": { "minUI5Version": "1.120.0", "libs": { "sap.m": {}, "sap.ui.core": {} } },
+    "rootView": { "viewName": "ip.po.view.Overview", "type": "XML", "id": "app", "async": true },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": { "bundleName": "ip.po.i18n.i18n", "supportedLocales": ["", "id"], "fallbackLocale": "" }
+      },
+      "": { "dataSource": "mainService", "settings": { "defaultBindingMode": "TwoWay", "useBatch": false } }
+    },
+    "contentDensities": { "compact": true, "cozy": true }
+  }
+}

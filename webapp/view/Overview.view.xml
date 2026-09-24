@@ -1,0 +1,52 @@
+<mvc:View controllerName="ip.po.controller.Overview"
+  xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+  displayBlock="true">
+  <App>
+    <Page title="{i18n>pageTitle}" busy="{ui>/busy}" busyIndicatorDelay="0">
+      <headerContent>
+        <Button icon="sap-icon://refresh" text="{i18n>refresh}" press=".onRefresh"/>
+      </headerContent>
+      <content>
+        <Table id="tabelPO" items="{/C_PurchaseOrderFs}" growing="true" growingThreshold="20" noDataText="{= ${ui>/busy} ? ${i18n>loading} : ${i18n>noData} }"
+               updateFinished=".onUpdateFinished"
+               busyIndicatorDelay="0">
+          <headerToolbar>
+            <OverflowToolbar>
+              <Title text="{i18n>tableHeader}" level="H2"/>
+              <ObjectStatus text="{ui>/jumlah}" state="Information" class="sapUiTinyMarginBegin"/>
+              <ToolbarSpacer/>
+              <SearchField width="18rem" placeholder="{i18n>searchPlaceholder}"
+                           search=".onSearch" liveChange=".onSearch"/>
+            </OverflowToolbar>
+          </headerToolbar>
+          <columns>
+            <Column><Text text="{i18n>colPO}"/></Column>
+            <Column><Text text="{i18n>colType}"/></Column>
+            <Column><Text text="{i18n>colSupplier}"/></Column>
+            <Column><Text text="{i18n>colCompany}"/></Column>
+            <Column><Text text="{i18n>colDate}"/></Column>
+            <Column hAlign="End"><Text text="{i18n>colAmount}"/></Column>
+            <Column><Text text="{i18n>colPayment}"/></Column>
+          </columns>
+          <items>
+            <ColumnListItem>
+              <cells>
+                <ObjectIdentifier title="{PurchaseOrder}" text="{PurchaseOrderType_Text}"/>
+                <Text text="{PurchaseOrderType}"/>
+                <Text text="{Supplier}"/>
+                <Text text="{CompanyCode} — {CompanyCodeName}"/>
+                <Text text="{ path: 'PurchaseOrderDate', type: 'sap.ui.model.type.Date',
+                              formatOptions: { style: 'medium' } }"/>
+                <ObjectNumber number="{ path: 'PurchaseOrderNetAmount',
+                                        type: 'sap.ui.model.type.Float',
+                                        formatOptions: { minFractionDigits: 2, maxFractionDigits: 2 } }"
+                              unit="{DocumentCurrency}"/>
+                <Text text="{PaymentTermsDescription}"/>
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+      </content>
+    </Page>
+  </App>
+</mvc:View>
