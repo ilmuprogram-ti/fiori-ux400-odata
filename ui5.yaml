@@ -1,0 +1,30 @@
+specVersion: "3.1"
+metadata:
+  name: fiori-ux400-odata
+type: application
+server:
+  customMiddleware:
+    # Proksi ke sistem SAP. Tanpa ini peramban menolak permintaan /sap/*
+    # sebagai pelanggaran CORS: halaman dilayani dari localhost, layanannya
+    # dari domain lain.
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+        backend:
+          - path: /sap
+            url: https://sap.ilmuprogram.com
+            client: "777"
+        # SAPUI5 sendiri ikut diproksikan, sehingga index.html cukup menyebut
+        # resources/sap-ui-core.js — sama seperti proyek UX400.
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.120.42
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp

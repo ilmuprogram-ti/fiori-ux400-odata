@@ -12,16 +12,39 @@ yang dapat dinyatakan sebagai kriteria lulus.
 
 ## Menjalankan
 
+Perkakas baku SAP Fiori — tidak ada skrip buatan sendiri.
+
 ```bash
-export SAP_USER='...'          # nama pengguna sistem SAP
-export SAP_PASS='...'          # jangan pernah ditulis di berkas
-node jalankan.js
+npm install
+npm start
 ```
 
-| | |
-|---|---|
-| Inggris | http://127.0.0.1:8090/index.html |
-| Indonesia | http://127.0.0.1:8090/index.html?sap-ui-language=id |
+Halaman terbuka sendiri di `http://localhost:8080/index.html`.
+Untuk bahasa Indonesia, tambahkan `?sap-ui-language=id`.
+
+### Kredensial
+
+Layanannya menuntut login — tanpa itu jawabannya **401**. Ada dua jalur, dan
+tidak satu pun menaruh sandi di dalam repositori:
+
+**Di SAP Business Application Studio** — `npm start` meminta nama pengguna dan
+sandi di terminal pada permintaan pertama, lalu menyimpannya untuk sesi itu.
+Tidak perlu menyetel apa pun.
+
+**Di komputer sendiri** — setel dua variabel lingkungan sebelum `npm start`:
+
+```bash
+export FIORI_TOOLS_USER='...'
+export FIORI_TOOLS_PASSWORD='...'
+npm start
+```
+
+`fiori-tools-proxy` akan menuliskan peringatan `No credential found` yang
+merujuk penyimpanan kredensial sistem, bukan variabel lingkungan. Selama kedua
+variabel itu terisi, permintaannya tetap lolos — peringatan itu dapat diabaikan.
+
+**Sandi tidak pernah sampai ke peramban.** Proksi yang memasang header
+`Authorization`; kode aplikasi tidak pernah melihatnya.
 
 ## Layanan yang dipakai
 
@@ -45,10 +68,10 @@ beserta `synchronizationMode` dan `autoExpandSelect`. Layanan ini V2: modelnya
 `sap.ui.model.odata.v2.ODataModel`, ketiga setelan itu tidak berlaku, dan
 pembuatan data memakai `oModel.create()`, bukan `oListBinding.create()`.
 
-**Proksi wajib.** Halaman berjalan di `127.0.0.1`, layanan di domain lain —
-peramban menolaknya sebagai pelanggaran CORS. `jalankan.js` meneruskan `/sap/*`
-ke sistemnya sambil memasang header `Authorization`, sehingga **sandi tidak
-pernah sampai ke peramban**.
+**Proksi wajib.** Halaman berjalan di `localhost`, layanan di domain lain —
+peramban menolaknya sebagai pelanggaran CORS. `fiori-tools-proxy` di `ui5.yaml`
+meneruskan `/sap/*` ke sistemnya, dan `/resources/*` ke CDN SAPUI5 sehingga
+`index.html` cukup menyebut `resources/sap-ui-core.js` seperti proyek UX400.
 
 **`sap-client` disisipkan proksi.** Tanpa itu gateway memakai client bawaan
 sistem, bukan 777, dan hasilnya kosong tanpa pesan galat.
@@ -57,7 +80,7 @@ sistem, bukan 777, dan hasilnya kosong tanpa pesan galat.
 
 Perlu token CSRF: satu GET dengan header `X-CSRF-Token: Fetch`, lalu tokennya
 disertakan di setiap POST. Tanpa itu jawabannya 403 yang bentuknya persis
-seperti masalah otorisasi. `jalankan.js` sudah meneruskan header tersebut dua
+seperti masalah otorisasi. `fiori-tools-proxy` meneruskan header tersebut dua
 arah, jadi sisi proksinya siap.
 
 ## Keadaan sistem saat dipetakan (24 September 2026)
